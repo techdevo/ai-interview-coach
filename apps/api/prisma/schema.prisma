@@ -22,6 +22,7 @@ model Candidate {
   id              String              @id @default(cuid())
   name            String
   email           String              @unique
+  passwordHash    String
   experienceYears Int                 @default(0)
   targetRole      String?
   resumeText      String?
