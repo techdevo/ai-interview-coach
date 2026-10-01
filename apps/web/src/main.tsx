@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles.css';
+import { ProfileForm, type Profile } from './ProfileForm';
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
@@ -44,6 +45,8 @@ function App() {
   const [id, setId] = useState('');
   const [data, setData] = useState<any>(null);
   const [topic, setTopic] = useState('Node.js');
+  const [profile, setProfile] = useState<Profile>({ name:'', email:'', experienceYears:0, targetRole:'', resumeText:'', jobDescription:'' });
+  const [profileSaved, setProfileSaved] = useState(false);
   const [question, setQuestion] = useState<Question | null>(null);
   const [answer, setAnswer] = useState('');
   const [evaluation, setEvaluation] = useState<Evaluation | null>(null);
@@ -82,17 +85,29 @@ function App() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: 'Demo Candidate',
+          name: 'New Candidate',
           email: `demo-${Date.now()}@example.com`,
-          experienceYears: 6,
-          targetRole: 'Senior Node.js Engineer',
-          resumeText: '6 years Node.js, React, AWS, PostgreSQL, Docker.',
-          jobDescription: 'Senior backend engineer with Node.js, AWS, distributed systems and system design.',
+          experienceYears: 0,
+          targetRole: '',
+          resumeText: '',
+          jobDescription: '',
         }),
       });
       localStorage.setItem('candidateId', candidate.id);
       setId(candidate.id); setData(candidate); setReport(null); setLearningPlan(null);
+      setProfile({ name:candidate.name, email:candidate.email, experienceYears:candidate.experienceYears, targetRole:candidate.targetRole || '', resumeText:candidate.resumeText || '', jobDescription:candidate.jobDescription || '' });
+      setProfileSaved(false);
     } catch (e) { setError(e instanceof Error ? e.message : 'Failed'); }
+    finally { setLoading(false); }
+  }
+
+  async function saveProfile() {
+    setLoading(true); setError('');
+    try {
+      const candidate = await request(`/api/candidates/${id}`, { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify(profile) });
+      setData({ ...data, ...candidate, jobAnalysis:null, skills:[] });
+      setProfileSaved(true); setReport(null); setLearningPlan(null);
+    } catch (e) { setError(e instanceof Error ? e.message : 'Could not save profile'); }
     finally { setLoading(false); }
   }
 
@@ -171,6 +186,7 @@ function App() {
       {error && <div className="error">{error}</div>}
 
       {data && <>
+        <ProfileForm profile={profile} setProfile={setProfile} onSave={saveProfile} loading={loading} saved={profileSaved} />
         <section className="grid">
           <div className="card">
             <div className="cardHeader"><div><span className="eyebrow">CANDIDATE</span><h2>{data.targetRole}</h2><p>{data.email}</p></div><button className="secondary" onClick={analyze} disabled={loading}>Analyze skills</button></div>
