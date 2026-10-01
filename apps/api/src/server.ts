@@ -95,7 +95,7 @@ app.use('/api/interviews/:id', asyncRoute(async (req, res, next) => {
     return;
   }
   next();
-});
+}));
 
 app.get('/health', (_req, res) => {
   res.json({ ok: true });
