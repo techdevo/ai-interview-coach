@@ -53,6 +53,7 @@ app.get(
           orderBy: { createdAt: 'desc' },
         },
         readiness: { orderBy: { createdAt: 'desc' } },
+        jobAnalysis: true,
       },
     });
 
@@ -97,7 +98,14 @@ app.post(
     }
 
     const result = await jsonCompletion(
-      'Analyze the candidate against the target job. Score demonstrated skills from 0-100 and identify important gaps.',
+      [
+        'Analyze the candidate against the target job for interview preparation.',
+        'Use only evidence present in the resume when judging demonstrated skills.',
+        'Treat the job description as target requirements, not as evidence that the candidate has the skill.',
+        'Calculate fitScore from 0-100 based on demonstrated coverage of the most important requirements.',
+        'Identify strengths supported by the resume and prioritized gaps that should affect interview preparation.',
+        'Keep skill names normalized and practical for an experienced software engineer.',
+      ].join(' '),
       `Target role: ${candidate.targetRole || 'Software Engineer'}\nResume:\n${candidate.resumeText || 'Not provided'}\nJob description:\n${candidate.jobDescription || 'Not provided'}`,
       analysisSchema,
     );
@@ -112,9 +120,42 @@ app.post(
           evidence: skill.evidence,
         })),
       }),
+      prisma.jobAnalysis.upsert({
+        where: { candidateId: candidate.id },
+        update: {
+          fitScore: result.fitScore,
+          summary: result.summary,
+          strengths: result.strengths,
+          gaps: result.gaps,
+        },
+        create: {
+          candidateId: candidate.id,
+          fitScore: result.fitScore,
+          summary: result.summary,
+          strengths: result.strengths,
+          gaps: result.gaps,
+        },
+      }),
     ]);
 
-    res.json(result);
+    res.json({ ...result, candidateId: candidate.id });
+  }),
+);
+
+app.get(
+  '/api/candidates/:id/job-analysis',
+  asyncRoute(async (req, res) => {
+    const candidate = await prisma.candidate.findUnique({
+      where: { id: routeParam(req, 'id') },
+      include: { jobAnalysis: true },
+    });
+
+    if (!candidate) {
+      res.status(404).json({ error: 'Candidate not found' });
+      return;
+    }
+
+    res.json(candidate.jobAnalysis);
   }),
 );
 
