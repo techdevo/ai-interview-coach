@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum InterviewStatus {
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+model Candidate {
+  id              String          @id @default(cuid())
+  name            String
+  email           String          @unique
+  experienceYears Int             @default(0)
+  targetRole      String?
+  resumeText      String?
+  jobDescription  String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  skills          CandidateSkill[]
+  interviews      Interview[]
+  learningPlans   LearningPlan[]
+}
+
+model CandidateSkill {
+  id          String    @id @default(cuid())
+  candidateId String
+  name        String
+  score       Int       @default(0)
+  evidence    String?
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@unique([candidateId, name])
+}
+
+model Interview {
+  id          String            @id @default(cuid())
+  candidateId String
+  status      InterviewStatus   @default(IN_PROGRESS)
+  topic       String
+  difficulty  Difficulty        @default(MEDIUM)
+  startedAt   DateTime          @default(now())
+  completedAt DateTime?
+  candidate   Candidate         @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  questions   InterviewQuestion[]
+}
+
+model InterviewQuestion {
+  id                 String    @id @default(cuid())
+  interviewId        String
+  sequence           Int
+  question           String
+  answer             String?
+  technicalScore     Int?
+  depthScore         Int?
+  communicationScore Int?
+  overallScore       Int?
+  feedback           String?
+  missingConcepts    Json?
+  interview          Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
+
+  @@unique([interviewId, sequence])
+}
+
+model LearningPlan {
+  id          String         @id @default(cuid())
+  candidateId String
+  title       String
+  createdAt   DateTime       @default(now())
+  tasks       LearningTask[]
+  candidate   Candidate      @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+}
+
+model LearningTask {
+  id              String       @id @default(cuid())
+  learningPlanId  String
+  day             Int
+  topic           String
+  activity        String
+  durationMinutes Int          @default(20)
+  completed       Boolean      @default(false)
+  plan            LearningPlan @relation(fields: [learningPlanId], references: [id], onDelete: Cascade)
+}
