@@ -182,7 +182,7 @@ function App() {
           <h1>Become interview-ready.</h1>
           <p>Practice against your target role, get evaluated, and close your skill gaps.</p>
         </div>
-        <button onClick={create} disabled={loading}>{id ? 'Create new demo' : 'Start MVP'}</button>
+        <button onClick={create} disabled={loading}>{id ? 'Create new profile' : 'Start MVP'}</button>
       </header>
 
       {error && <div className="error">{error}</div>}
@@ -191,7 +191,7 @@ function App() {
         <ProfileForm profile={profile} setProfile={setProfile} onSave={saveProfile} loading={loading} saved={profileSaved} />
         <section className="grid">
           <div className="card">
-            <div className="cardHeader"><div><span className="eyebrow">CANDIDATE</span><h2>{data.targetRole}</h2><p>{data.email}</p></div><button className="secondary" onClick={analyze} disabled={loading}>Analyze skills</button></div>
+            <div className="cardHeader"><div><span className="eyebrow">CANDIDATE</span><h2>{data.targetRole}</h2><p>{data.email}</p></div><button className="secondary" onClick={analyze} disabled={loading || !profileSaved}>Analyze skills</button></div>
             <div className="skills">
               {(data.skills || []).map((s: any) => <div className="skill" key={s.name}><span>{s.name}</span><b>{s.score}</b><div className="bar"><i style={{ width: `${s.score}%` }} /></div></div>)}
               {!data.skills?.length && <p>No skill assessment yet. Run AI analysis to create your baseline.</p>}
