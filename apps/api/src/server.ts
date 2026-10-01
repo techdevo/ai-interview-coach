@@ -8,6 +8,7 @@ import { extractJobDescriptionFromUrl } from './services/job.service';
 import { prisma } from './lib/prisma';
 import { jsonCompletion } from './ai/openai';
 import { analysisSchema, planSchema } from './ai/schemas';
+import { authCandidateId, hashPassword, requireAuth, signToken, verifyPassword } from './auth';
 import {
   startInterview,
   answerInterview,
@@ -18,6 +19,15 @@ import {
 const app = express();
 const port = Number(process.env.PORT || 4000);
 const resumeUpload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
+
+const asyncRoute =
+  (handler: (req: Request, res: Response, next: NextFunction) => Promise<void>) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    Promise.resolve(handler(req, res, next)).catch((error: unknown) => {
+      const message = error instanceof Error ? error.message : 'Request failed';
+      res.status(400).json({ error: message });
+    });
+  };
 
 function routeParam(req: Request, name: string): string {
   const value = req.params[name];
@@ -86,15 +96,6 @@ app.use('/api/interviews/:id', asyncRoute(async (req, res, next) => {
   }
   next();
 });
-
-const asyncRoute =
-  (handler: (req: Request, res: Response, next: NextFunction) => Promise<void>) =>
-  (req: Request, res: Response, next: NextFunction) => {
-    Promise.resolve(handler(req, res, next)).catch((error: unknown) => {
-      const message = error instanceof Error ? error.message : 'Request failed';
-      res.status(400).json({ error: message });
-    });
-  };
 
 app.get('/health', (_req, res) => {
   res.json({ ok: true });
