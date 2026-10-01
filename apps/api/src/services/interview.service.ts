@@ -68,7 +68,7 @@ function average(values: number[]) {
     : 0;
 }
 
-async function completeInterview(interviewId: string) {
+async function completeInterview(interviewId: string, strengths: string[] = []) {
   const interview = await prisma.interview.findUnique({
     where: { id: interviewId },
     include: { questions: { orderBy: { sequence: 'asc' } } },
@@ -96,7 +96,7 @@ async function completeInterview(interviewId: string) {
       technicalScore: technical,
       depthScore: depth,
       communicationScore: communication,
-      strengths: [],
+      strengths,
       missingConcepts,
     },
     create: {
@@ -106,7 +106,7 @@ async function completeInterview(interviewId: string) {
       technicalScore: technical,
       depthScore: depth,
       communicationScore: communication,
-      strengths: [],
+      strengths,
       missingConcepts,
     },
   });
@@ -181,7 +181,7 @@ export async function answerInterview(interviewId: string, sequence: number, ans
       data: { status: 'COMPLETED', completedAt: new Date() },
     });
 
-    const readiness = await completeInterview(interview.id);
+    const readiness = await completeInterview(interview.id, evaluation.strengths);
 
     return {
       evaluation,
@@ -318,6 +318,7 @@ export async function getCandidateReadiness(candidateId: string) {
       technicalScore: snapshot.technicalScore,
       depthScore: snapshot.depthScore,
       communicationScore: snapshot.communicationScore,
+      strengths: Array.isArray(snapshot.strengths) ? snapshot.strengths : [],
       createdAt: snapshot.createdAt,
       missingConcepts: Array.isArray(snapshot.missingConcepts)
         ? snapshot.missingConcepts
