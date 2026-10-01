@@ -149,7 +149,7 @@ export async function answerInterview(interviewId: string, sequence: number, ans
     where: { id: interviewId },
     include: {
       questions: { orderBy: { sequence: 'asc' } },
-      candidate: { include: { skills: true } },
+      candidate: { include: { skills: true, jobAnalysis: true } },
     },
   });
 
