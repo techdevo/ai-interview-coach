@@ -337,22 +337,33 @@ export async function getCandidateReadiness(candidateId: string) {
 
   if (!candidate) throw new Error('Candidate not found');
 
+  const history = candidate.readiness.map((snapshot) => ({
+    interviewId: snapshot.interviewId,
+    readinessScore: snapshot.readinessScore,
+    technicalScore: snapshot.technicalScore,
+    depthScore: snapshot.depthScore,
+    communicationScore: snapshot.communicationScore,
+    strengths: Array.isArray(snapshot.strengths) ? snapshot.strengths : [],
+    createdAt: snapshot.createdAt,
+    missingConcepts: Array.isArray(snapshot.missingConcepts)
+      ? snapshot.missingConcepts
+      : [],
+  }));
+
+  const cumulativeReadinessScore = history.length
+    ? Math.round(history.reduce((sum, item) => sum + item.readinessScore, 0) / history.length)
+    : 0;
+
+  const latest = history.at(-1) || null;
+  const previous = history.length > 1 ? history.at(-2) : null;
+
   return {
     candidateId,
     role: candidate.targetRole || 'Software Engineer',
     skills: candidate.skills,
-    history: candidate.readiness.map((snapshot) => ({
-      interviewId: snapshot.interviewId,
-      readinessScore: snapshot.readinessScore,
-      technicalScore: snapshot.technicalScore,
-      depthScore: snapshot.depthScore,
-      communicationScore: snapshot.communicationScore,
-      strengths: Array.isArray(snapshot.strengths) ? snapshot.strengths : [],
-      createdAt: snapshot.createdAt,
-      missingConcepts: Array.isArray(snapshot.missingConcepts)
-        ? snapshot.missingConcepts
-        : [],
-    })),
-    latest: candidate.readiness.at(-1) || null,
+    cumulativeReadinessScore,
+    latestChange: latest && previous ? latest.readinessScore - previous.readinessScore : 0,
+    history,
+    latest,
   };
 }
