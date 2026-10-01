@@ -9,3 +9,5 @@
 .jobUrlRow{display:flex;gap:10px;margin:8px 0 12px}.jobUrlRow input{flex:1;padding:11px 12px;border:1px solid #ddd;border-radius:9px}.progressCard{margin-top:0}.trend{margin-top:18px}.trendItem{position:relative;display:grid;grid-template-columns:100px 45px 1fr;align-items:center;gap:12px;margin:12px 0;font-size:12px}.trendItem i{height:8px;background:#171717;border-radius:8px;display:block}.trendChange{font-weight:700;font-size:13px}.profileCard .secondary{margin-top:0}@media(max-width:800px){.jobUrlRow{display:block}.jobUrlRow button{margin-top:8px;width:100%}}
 
 .scoreNote{font-size:12px;color:#777;margin-top:-6px}
+
+.recurringGaps{margin-top:18px;padding-top:16px;border-top:1px solid #eee}.recurringGaps h3{margin:0 0 4px}.recurringGaps p{margin:0 0 10px;font-size:13px;color:#777}.gapChips{display:flex;flex-wrap:wrap;gap:8px}.gapChip{padding:6px 10px;border:1px solid #ddd;border-radius:999px;font-size:12px}
