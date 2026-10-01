@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 
 export type Profile = { name:string; email:string; experienceYears:number; targetRole:string; resumeText:string; jobDescription:string };
 
-export function ProfileForm({ profile, setProfile, onSave, onResumeUpload, loading, saved }: { profile: Profile; setProfile: (p:Profile)=>void; onSave:()=>void; loading:boolean; saved:boolean; onResumeUpload:(file:File)=>Promise<void> }) {
+export function ProfileForm({ profile, setProfile, onSave, onResumeUpload, jobUrl, setJobUrl, onJobUrlImport, jobUrlLoading, loading, saved }: { profile: Profile; setProfile: (p:Profile)=>void; onSave:()=>void; loading:boolean; saved:boolean; onResumeUpload:(file:File)=>Promise<void>; jobUrl:string; setJobUrl:(value:string)=>void; onJobUrlImport:()=>void; jobUrlLoading:boolean }) {
   const [uploading, setUploading] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
   const valid = profile.name && profile.email && profile.targetRole && profile.resumeText.length >= 20 && profile.jobDescription.length >= 20;
@@ -18,6 +18,7 @@ export function ProfileForm({ profile, setProfile, onSave, onResumeUpload, loadi
     </div>
     <div className="uploadRow"><div><b>Resume file</b><p>Upload PDF or DOCX, up to 5 MB.</p></div><button type="button" className="secondary" onClick={()=>fileInput.current?.click()} disabled={uploading}>{uploading ? 'Extracting...' : 'Upload resume'}</button><input ref={fileInput} type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden onChange={e=>{const file=e.target.files?.[0]; if(file) upload(file).catch(()=>{}); e.currentTarget.value='';}} /></div>
     <label>Resume<textarea className="profileTextarea" value={profile.resumeText} placeholder="Paste your resume text here..." onChange={e=>update('resumeText',e.target.value)} /></label>
+    <div className="jobUrlRow"><input value={jobUrl} placeholder="Paste job description URL" onChange={e=>setJobUrl(e.target.value)} /><button type="button" className="secondary" onClick={onJobUrlImport} disabled={jobUrlLoading || !jobUrl.trim()}>{jobUrlLoading ? 'Importing...' : 'Import from URL'}</button></div>
     <label>Job description<textarea className="profileTextarea" value={profile.jobDescription} placeholder="Paste the target job description here..." onChange={e=>update('jobDescription',e.target.value)} /></label>
     {saved && <div className="savedNotice">Profile saved. Run <b>Analyze skills</b> to refresh the job fit and interview priorities.</div>}
   </section>;
