@@ -6,7 +6,11 @@ type Difficulty = 'EASY' | 'MEDIUM' | 'HARD';
 const MAX_QUESTIONS = 10;
 
 function questionContext(
-  candidate: { targetRole: string | null; skills: Array<{ name: string; score: number }> },
+  candidate: {
+    targetRole: string | null;
+    skills: Array<{ name: string; score: number }>;
+    jobAnalysis: { fitScore: number; gaps: unknown } | null;
+  },
   topic: string,
   difficulty: Difficulty,
 ) {
@@ -15,13 +19,15 @@ function questionContext(
     `Interview topic: ${topic}`,
     `Starting difficulty: ${difficulty}`,
     `Known skills: ${candidate.skills.map((skill) => `${skill.name}(${skill.score})`).join(', ') || 'Not assessed yet'}`,
+    `Job fit score: ${candidate.jobAnalysis?.fitScore ?? 'Not analyzed'}`,
+    `Priority job gaps: ${formatJobGaps(candidate.jobAnalysis?.gaps)}`,
   ].join('\n');
 }
 
 export async function startInterview(candidateId: string, topic: string, difficulty: Difficulty = 'MEDIUM') {
   const candidate = await prisma.candidate.findUnique({
     where: { id: candidateId },
-    include: { skills: true },
+    include: { skills: true, jobAnalysis: true },
   });
 
   if (!candidate) throw new Error('Candidate not found');
@@ -37,6 +43,8 @@ export async function startInterview(candidateId: string, topic: string, difficu
       'Test understanding, reasoning, trade-offs and practical experience rather than trivia.',
       'The question must be answerable verbally by an experienced engineer.',
       'Return one focused question and classify its topic and difficulty.',
+      'When job analysis exists, prioritize a relevant high-priority job gap.',
+      'Treat job-analysis gaps as hypotheses to validate, not conclusions about the candidate.',
     ].join(' '),
     questionContext(candidate, topic, difficulty),
     nextQuestionSchema,
@@ -60,6 +68,21 @@ export async function startInterview(candidateId: string, topic: string, difficu
     sequence: 1,
     maxQuestions: MAX_QUESTIONS,
   };
+}
+
+function formatJobGaps(gaps: unknown) {
+  if (!Array.isArray(gaps) || gaps.length === 0) return 'None identified';
+
+  return gaps
+    .map((gap) => {
+      if (!gap || typeof gap !== 'object') return null;
+      const item = gap as { name?: unknown; priority?: unknown; reason?: unknown };
+      return item.name
+        ? String(item.name) + '[' + String(item.priority || 'MEDIUM') + ']: ' + String(item.reason || '')
+        : null;
+    })
+    .filter(Boolean)
+    .join('; ') || 'None identified';
 }
 
 function average(values: number[]) {
@@ -156,6 +179,8 @@ export async function answerInterview(interviewId: string, sequence: number, ans
       `Question difficulty: ${question.difficulty || interview.difficulty}`,
       `Candidate answer: ${answer}`,
       `Prior skill scores: ${interview.candidate.skills.map((skill) => `${skill.name}:${skill.score}`).join(', ') || 'Not assessed'}`,
+      `Job fit score: ${interview.candidate.jobAnalysis?.fitScore ?? 'Not analyzed'}`,
+      `Job gaps: ${formatJobGaps(interview.candidate.jobAnalysis?.gaps)}`,
     ].join('\n'),
     evaluationSchema,
   );
@@ -209,6 +234,8 @@ export async function answerInterview(interviewId: string, sequence: number, ans
       'If the candidate demonstrates mastery, increase difficulty or move to a related topic.',
       'Avoid repeating questions or testing the same concept unnecessarily.',
       'Keep the interview balanced across the requested topic when possible.',
+      'Prioritize unresolved high-priority job gaps when relevant to the current topic.',
+      'Do not repeatedly test a gap once sufficient evidence of competence has been established.',
     ].join(' '),
     [
       `Role: ${interview.candidate.targetRole || 'Software Engineer'}`,
@@ -220,6 +247,8 @@ export async function answerInterview(interviewId: string, sequence: number, ans
       `Latest evaluation: ${evaluation.feedback}`,
       `Missing concepts: ${evaluation.missingConcepts.join(', ') || 'None identified'}`,
       `Next-action signal: ${evaluation.nextAction}`,
+      `Job fit score: ${interview.candidate.jobAnalysis?.fitScore ?? 'Not analyzed'}`,
+      `Job gaps: ${formatJobGaps(interview.candidate.jobAnalysis?.gaps)}`,
       `Previous interview context:\n${answeredQuestions || 'None'}`,
     ].join('\n'),
     nextQuestionSchema,
