@@ -344,3 +344,20 @@ body{background:var(--paper)}
   .landingAudience{padding:65px 20px}
   .landingAudience h2{font-size:49px;letter-spacing:-3px}
 }
+
+
+/* Keep the three process connectors independent of JSX step placement */
+.loopSteps>div:not(:last-child)::after{
+  content:"";
+  position:absolute;
+  left:42px;
+  right:-9px;
+  top:20px;
+  border-top:1px solid #d8d8d2;
+  z-index:0;
+}
+.loopSteps .loopStepNumber{position:relative;z-index:1}
+.loopSteps .loopConnector{display:none}
+@media(max-width:900px){
+  .loopSteps>div:not(:last-child)::after{display:none}
+}
