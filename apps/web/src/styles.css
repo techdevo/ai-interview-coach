@@ -162,3 +162,49 @@ body{background:var(--paper)}
 .error{background:#fff1e7;border-color:#f0c28d;color:#8a4c08}
 .siteFooter{border-color:var(--line)}
 .siteFooter div{color:var(--indigo-dark)}
+
+
+/* Color polish pass: calmer hierarchy, stronger brand accents */
+.dashboardReadinessCard{
+  background:linear-gradient(135deg,#30266f 0%,#5143b4 72%,#6555c7 100%);
+}
+.dashboardReadinessCard:after{opacity:.55}
+.nextActionCard{
+  background:linear-gradient(135deg,#27213f 0%,#393064 58%,#5147a0 100%);
+  box-shadow:0 16px 40px rgba(52,40,120,.12)
+}
+.nextActionCard:after{opacity:.55}
+.dashboardHeroCopy h1:after{
+  width:92px;height:6px;margin-top:13px;
+  background:linear-gradient(90deg,var(--lime),#d4ed93);
+}
+.commandPrimary{box-shadow:0 4px 12px rgba(184,232,90,.16)}
+.commandReadiness{
+  background:rgba(255,255,255,.88);
+}
+.commandScore strong{letter-spacing:-2px}
+.commandBars em,.snapshotSkill em{background:linear-gradient(90deg,var(--indigo),var(--violet))}
+.trendItem i{background:linear-gradient(90deg,var(--indigo),var(--violet))}
+.commandJobCard .fitScore strong{letter-spacing:-1.5px}
+.commandGap em{
+  border:1px solid transparent;
+}
+.commandGap em.high{border-color:#f0c98e}
+.commandGap em.medium{border-color:#d7cdfb}
+.commandGap em.low{border-color:#d4e8ae}
+.commandInterview{
+  background:linear-gradient(180deg,#fffdf8 0%,#f8f5ff 100%);
+}
+.commandInterview:before{opacity:.65}
+.gapChip{
+  background:#f4f0ff;
+  border-color:#ddd5f6;
+}
+.recurringGaps .gapChip{
+  background:#f0f7df;
+  border-color:#dce9bc;
+  color:#50651e;
+}
+.dashboardApp .siteFooter{
+  background:transparent;
+}
