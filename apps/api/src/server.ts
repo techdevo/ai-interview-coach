@@ -144,8 +144,9 @@ app.post(
       })
       .parse(req.body);
 
+    const { password, ...candidateData } = body;
     const candidate = await prisma.candidate.create({
-      data: { ...body, passwordHash: await hashPassword(body.password), password: undefined },
+      data: { ...candidateData, passwordHash: await hashPassword(password) },
     });
     res.status(201).json(candidate);
   }),
@@ -318,6 +319,11 @@ app.post(
         difficulty: z.enum(['EASY', 'MEDIUM', 'HARD']).default('MEDIUM'),
       })
       .parse(req.body);
+
+    if (body.candidateId !== authCandidateId(req)) {
+      res.status(403).json({ error: 'You can only start interviews for your own profile' });
+      return;
+    }
 
     const interview = await startInterview(
       body.candidateId,
