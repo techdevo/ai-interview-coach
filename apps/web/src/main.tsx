@@ -103,6 +103,17 @@ function App() {
     finally { setLoading(false); }
   }
 
+  async function uploadResume(file: File) {
+    setLoading(true); setError('');
+    try {
+      const form = new FormData(); form.append('resume', file);
+      const result = await request(`/api/candidates/${id}/resume`, { method:'POST', body:form });
+      setProfile({ ...profile, resumeText: result.resumeText });
+      setProfileSaved(false);
+    } catch (e) { setError(e instanceof Error ? e.message : 'Could not process resume'); }
+    finally { setLoading(false); }
+  }
+
   async function saveProfile() {
     setLoading(true); setError('');
     try {
@@ -188,7 +199,7 @@ function App() {
       {error && <div className="error">{error}</div>}
 
       {data && <>
-        <ProfileForm profile={profile} setProfile={setProfile} onSave={saveProfile} loading={loading} saved={profileSaved} />
+        <ProfileForm profile={profile} setProfile={setProfile} onSave={saveProfile} onResumeUpload={uploadResume} loading={loading} saved={profileSaved} />
         <section className="grid">
           <div className="card">
             <div className="cardHeader"><div><span className="eyebrow">CANDIDATE</span><h2>{data.targetRole}</h2><p>{data.email}</p></div><button className="secondary" onClick={analyze} disabled={loading || !profileSaved}>Analyze skills</button></div>
