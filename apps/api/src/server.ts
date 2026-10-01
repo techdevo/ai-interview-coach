@@ -5,7 +5,12 @@ import { z } from 'zod';
 import { prisma } from './lib/prisma';
 import { jsonCompletion } from './ai/openai';
 import { analysisSchema, planSchema } from './ai/schemas';
-import { startInterview, answerInterview, getInterviewReport } from './services/interview.service';
+import {
+  startInterview,
+  answerInterview,
+  getInterviewReport,
+  getCandidateReadiness,
+} from './services/interview.service';
 
 const app = express();
 const port = Number(process.env.PORT || 4000);
@@ -34,13 +39,14 @@ app.get(
       include: {
         skills: true,
         interviews: {
-          include: { questions: true },
+          include: { questions: true, readiness: true },
           orderBy: { startedAt: 'desc' },
         },
         learningPlans: {
           include: { tasks: true },
           orderBy: { createdAt: 'desc' },
         },
+        readiness: { orderBy: { createdAt: 'desc' } },
       },
     });
 
@@ -152,6 +158,14 @@ app.get(
   asyncRoute(async (req, res) => {
     const report = await getInterviewReport(req.params.id);
     res.json(report);
+  }),
+);
+
+app.get(
+  '/api/candidates/:id/readiness',
+  asyncRoute(async (req, res) => {
+    const readiness = await getCandidateReadiness(req.params.id);
+    res.json(readiness);
   }),
 );
 
