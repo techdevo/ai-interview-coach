@@ -283,6 +283,7 @@ function App() {
           <div className="cardHeader"><div><span className="eyebrow">READINESS PROGRESS</span><h2>Cumulative readiness</h2><p>Average readiness across completed interviews.</p></div><div className="readiness"><strong>{readinessHistory.cumulativeReadinessScore}</strong><span>/100</span></div></div>
           <div className="trend">{readinessHistory.history.map((item:any, index:number)=><div className="trendItem" key={item.interviewId}><span>Interview {index+1}</span><b>{item.readinessScore}</b><i style={{width:`${item.readinessScore}%`}} /></div>)}</div>
           {readinessHistory.latestChange !== 0 && <p className="trendChange">{readinessHistory.latestChange > 0 ? '+' : ''}{readinessHistory.latestChange} points since the previous interview.</p>}
+          {readinessHistory.recurringGaps?.length > 0 && <div className="recurringGaps"><h3>Recurring gaps</h3><p>Concepts that appeared as missing areas across multiple interviews.</p><div className="gapChips">{readinessHistory.recurringGaps.map((gap:any) => <span className="gapChip" key={gap.concept}>{gap.concept} · {gap.occurrences}×</span>)}</div></div>}
         </section>}
 
         {report && <section className="card report">
