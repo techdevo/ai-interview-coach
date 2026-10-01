@@ -4,6 +4,7 @@ import cors from 'cors';
 import { z } from 'zod';
 import multer from 'multer';
 import { extractResumeText } from './services/resume.service';
+import { extractJobDescriptionFromUrl } from './services/job.service';
 import { prisma } from './lib/prisma';
 import { jsonCompletion } from './ai/openai';
 import { analysisSchema, planSchema } from './ai/schemas';
@@ -85,6 +86,25 @@ app.post(
 
     const candidate = await prisma.candidate.create({ data: body });
     res.status(201).json(candidate);
+  }),
+);
+
+app.post(
+  '/api/candidates/:id/job-description/url',
+  asyncRoute(async (req, res) => {
+    const body = z.object({ url: z.string().url() }).parse(req.body);
+    const jobDescription = await extractJobDescriptionFromUrl(body.url);
+
+    const candidate = await prisma.candidate.update({
+      where: { id: routeParam(req, 'id') },
+      data: { jobDescription },
+    });
+
+    await prisma.jobAnalysis.deleteMany({
+      where: { candidateId: candidate.id },
+    });
+
+    res.json({ candidateId: candidate.id, url: body.url, jobDescription });
   }),
 );
 
