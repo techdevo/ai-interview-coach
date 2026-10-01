@@ -19,6 +19,8 @@ export const evaluationSchema = z.object({
 });
 
 export const analysisSchema = z.object({
+  fitScore: z.number().int().min(0).max(100),
+  strengths: z.array(z.string()),
   skills: z.array(z.object({
     name: z.string(),
     score: z.number().int().min(0).max(100),

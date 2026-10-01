@@ -1,0 +1,1 @@
+ALTER TABLE "Candidate" ADD COLUMN "passwordHash" TEXT NOT NULL DEFAULT '';
