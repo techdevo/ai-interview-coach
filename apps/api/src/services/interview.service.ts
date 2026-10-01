@@ -108,12 +108,7 @@ async function completeInterview(interviewId: string, strengths: string[] = []) 
     Array.isArray(q.missingConcepts) ? q.missingConcepts.map(String) : [],
   ))];
 
-  const allStrengths = [...new Set([
-    ...strengths,
-    ...answered.flatMap((q) =>
-      Array.isArray(q.missingConcepts) ? [] : [],
-    ),
-  ])];
+  const allStrengths = [...new Set(strengths.map(String))];
 
   const consistencyBonus = answered.length >= 5
     ? Math.min(5, Math.max(0, 5 - Math.round(
@@ -149,7 +144,7 @@ async function completeInterview(interviewId: string, strengths: string[] = []) 
       technicalScore: technical,
       depthScore: depth,
       communicationScore: communication,
-      strengths,
+      strengths: allStrengths,
       missingConcepts,
     },
   });
