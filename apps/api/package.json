@@ -18,7 +18,9 @@
     "zod": "^4.1.11",
     "mammoth": "^1.9.1",
     "multer": "^2.0.2",
-    "pdf-parse": "^1.1.1"
+    "pdf-parse": "^1.1.1",
+    "bcryptjs": "^3.0.2",
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
@@ -28,6 +30,7 @@
     "tsx": "^4.20.5",
     "typescript": "^5.9.2",
     "@types/multer": "^2.0.0",
-    "@types/pdf-parse": "^1.1.5"
+    "@types/pdf-parse": "^1.1.5",
+    "@types/jsonwebtoken": "^9.0.10"
   }
 }
