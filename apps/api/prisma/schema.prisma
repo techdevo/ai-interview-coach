@@ -32,6 +32,19 @@ model Candidate {
   interviews      Interview[]
   learningPlans   LearningPlan[]
   readiness       ReadinessSnapshot[]
+  jobAnalysis     JobAnalysis?
+}
+
+model JobAnalysis {
+  id          String    @id @default(cuid())
+  candidateId String    @unique
+  fitScore    Int
+  summary     String
+  strengths   Json
+  gaps        Json
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
 }
 
 model CandidateSkill {
