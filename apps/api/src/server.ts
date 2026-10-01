@@ -308,7 +308,11 @@ app.post(
   asyncRoute(async (req, res) => {
     const candidate = await prisma.candidate.findUnique({
       where: { id: routeParam(req, 'id') },
-      include: { skills: true },
+      include: {
+        skills: true,
+        jobAnalysis: true,
+        readiness: { orderBy: { createdAt: 'asc' } },
+      },
     });
 
     if (!candidate) {
@@ -317,8 +321,26 @@ app.post(
     }
 
     const plan = await jsonCompletion(
-      'Create a practical 14-day software-engineering interview preparation plan. Prioritize weak skills.',
-      `Role: ${candidate.targetRole || 'Software Engineer'}\nSkill scores: ${candidate.skills.map((skill) => `${skill.name}:${skill.score}`).join(', ')}`,
+      [
+        'Create a practical 14-day software-engineering interview preparation plan.',
+        'Prioritize gaps that are important for the target job and repeatedly observed in interview performance.',
+        'Use candidate skill scores, job-analysis gaps, and readiness history as evidence.',
+        'Do not treat a single weak answer as proof of a persistent weakness.',
+        'Progress from concept review to applied practice and interview simulation.',
+      ].join(' '),
+      [
+        `Role: ${candidate.targetRole || 'Software Engineer'}`,
+        `Skill scores: ${candidate.skills.map((skill) => `${skill.name}:${skill.score}`).join(', ') || 'Not assessed'}`,
+        `Job fit: ${candidate.jobAnalysis?.fitScore ?? 'Not analyzed'}`,
+        `Job gaps: ${Array.isArray(candidate.jobAnalysis?.gaps) ? JSON.stringify(candidate.jobAnalysis.gaps) : 'None identified'}`,
+        `Readiness history: ${candidate.readiness.map((item) => JSON.stringify({
+          readinessScore: item.readinessScore,
+          technicalScore: item.technicalScore,
+          depthScore: item.depthScore,
+          communicationScore: item.communicationScore,
+          missingConcepts: item.missingConcepts,
+        })).join('\n') || 'No completed interviews'}`,
+      ].join('\n'),
       planSchema,
     );
 
