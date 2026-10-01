@@ -56,6 +56,9 @@ function App() {
   const jobAnalysis: JobAnalysis | null = data?.jobAnalysis || null;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [readinessHistory, setReadinessHistory] = useState<any>(null);
+  const [jobUrl, setJobUrl] = useState('');
+  const [jobUrlLoading, setJobUrlLoading] = useState(false);
 
   async function request(path: string, options?: RequestInit) {
     const response = await fetch(`${API}${path}`, options);
@@ -68,6 +71,7 @@ function App() {
     if (!candidateId) return;
     const candidate = await request(`/api/candidates/${candidateId}`);
     setData(candidate);
+    request(`/api/candidates/${candidateId}/readiness`).then(setReadinessHistory).catch(()=>{});
     setProfile({ name:candidate.name, email:candidate.email, experienceYears:candidate.experienceYears, targetRole:candidate.targetRole || '', resumeText:candidate.resumeText || '', jobDescription:candidate.jobDescription || '' });
     setProfileSaved(true);
   }
@@ -112,6 +116,16 @@ function App() {
       setProfileSaved(false);
     } catch (e) { setError(e instanceof Error ? e.message : 'Could not process resume'); }
     finally { setLoading(false); }
+  }
+
+  async function importJobUrl() {
+    if (!jobUrl.trim()) return;
+    setJobUrlLoading(true); setError('');
+    try {
+      const result = await request(`/api/candidates/${id}/job-description/url`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({url:jobUrl.trim()}) });
+      setProfile({ ...profile, jobDescription: result.jobDescription }); setProfileSaved(false); setJobUrl('');
+    } catch (e) { setError(e instanceof Error ? e.message : 'Could not import job description'); }
+    finally { setJobUrlLoading(false); }
   }
 
   async function saveProfile() {
@@ -199,7 +213,7 @@ function App() {
       {error && <div className="error">{error}</div>}
 
       {data && <>
-        <ProfileForm profile={profile} setProfile={setProfile} onSave={saveProfile} onResumeUpload={uploadResume} loading={loading} saved={profileSaved} />
+        <ProfileForm profile={profile} setProfile={setProfile} onSave={saveProfile} onResumeUpload={uploadResume} jobUrl={jobUrl} setJobUrl={setJobUrl} onJobUrlImport={importJobUrl} jobUrlLoading={jobUrlLoading} loading={loading} saved={profileSaved} />
         <section className="grid">
           <div className="card">
             <div className="cardHeader"><div><span className="eyebrow">CANDIDATE</span><h2>{data.targetRole}</h2><p>{data.email}</p></div><button className="secondary" onClick={analyze} disabled={loading || !profileSaved}>Analyze skills</button></div>
@@ -264,6 +278,12 @@ function App() {
             {evaluation && <div className="evaluation"><h3>Latest evaluation</h3><div className="scoreGrid"><Score label="Technical" value={evaluation.technicalScore}/><Score label="Depth" value={evaluation.depthScore}/><Score label="Communication" value={evaluation.communicationScore}/><Score label="Overall" value={evaluation.overallScore}/></div><p>{evaluation.feedback}</p>{evaluation.strengths?.length > 0 && <><b>Strengths</b><ul>{evaluation.strengths.map(x => <li key={x}>{x}</li>)}</ul></>}{evaluation.missingConcepts?.length > 0 && <><b>Explore next</b><ul>{evaluation.missingConcepts.map(x => <li key={x}>{x}</li>)}</ul></>}</div>}
           </div>
         </section>
+
+        {readinessHistory?.history?.length > 0 && <section className="card progressCard">
+          <div className="cardHeader"><div><span className="eyebrow">READINESS PROGRESS</span><h2>Cumulative readiness</h2><p>Average readiness across completed interviews.</p></div><div className="readiness"><strong>{readinessHistory.cumulativeReadinessScore}</strong><span>/100</span></div></div>
+          <div className="trend">{readinessHistory.history.map((item:any, index:number)=><div className="trendItem" key={item.interviewId}><span>Interview {index+1}</span><b>{item.readinessScore}</b><i style={{width:`${item.readinessScore}%`}} /></div>)}</div>
+          {readinessHistory.latestChange !== 0 && <p className="trendChange">{readinessHistory.latestChange > 0 ? '+' : ''}{readinessHistory.latestChange} points since the previous interview.</p>}
+        </section>}
 
         {report && <section className="card report">
           <div className="cardHeader"><div><span className="eyebrow">INTERVIEW REPORT</span><h2>Your readiness snapshot</h2></div><div className="readiness"><strong>{readiness}</strong><span>/100</span></div></div>
