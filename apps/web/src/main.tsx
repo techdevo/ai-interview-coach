@@ -290,19 +290,32 @@ function App() {
   if(!token && !showAuth) return <LandingPage onGetStarted={(mode) => { setShowAuth(true); }} />;
   if(!token) return <AuthScreen onAuth={handleAuth}/>;
 
-  return <div className="appShell">
+  return <div className="appShell dashboardApp">
     <header className="siteHeader">
       <div className="headerInner">
-        <div className="brand"><span>AI</span> Interview Coach</div>
+        <a className="brand dashboardBrand" href="#" onClick={(e)=>{e.preventDefault();}}><span>AI</span> Interview Coach</a>
         <nav><a href="#dashboard">Dashboard</a><a href="#history">History</a><a href="#interview">Interview</a></nav>
         <div className="account"><span>{data?.name||profile.name}</span><button className="headerButton" onClick={logout}>Sign out</button></div>
       </div>
     </header>
     <main id="dashboard">
       {error&&<div className="error">{error}</div>}
-      <div className="pageIntro"><div><span className="eyebrow">DASHBOARD</span><h1>Become interview-ready.</h1><p>Practice against your target role, measure progress, and close your skill gaps.</p></div></div>
+      <section className="dashboardHero">
+        <div className="dashboardHeroCopy">
+          <span className="eyebrow">YOUR INTERVIEW HQ</span>
+          <h1>Become interview-ready.</h1>
+          <p>Practice against your target role, measure progress, and close the gaps that matter.</p>
+          <div className="dashboardHeroActions"><a href="#interview">Start an interview <span>→</span></a><a href="#profile">Update profile</a></div>
+        </div>
+        <div className="dashboardReadinessCard">
+          <div><span className="eyebrow">READINESS</span><small>{readinessHistory?.history?.length ? 'Latest interview' : 'Not assessed yet'}</small></div>
+          <strong>{readinessHistory?.cumulativeReadinessScore ?? '—'}<span>/100</span></strong>
+          <div className="dashboardScoreBar"><i style={{width: `${readinessHistory?.cumulativeReadinessScore || 0}%`}} /></div>
+          <p>{readinessHistory?.latestChange ? `${readinessHistory.latestChange > 0 ? '+' : ''}${readinessHistory.latestChange} points since your previous interview` : 'Complete your first interview to establish your baseline.'}</p>
+        </div>
+      </section>
       {data&&<>
-        <ProfileForm profile={profile} setProfile={setProfile} onSave={saveProfile} onResumeUpload={uploadResume} jobUrl={jobUrl} setJobUrl={setJobUrl} onJobUrlImport={importJobUrl} jobUrlLoading={jobUrlLoading} loading={loading} saved={profileSaved}/>
+        <div id="profile"><ProfileForm profile={profile} setProfile={setProfile} onSave={saveProfile} onResumeUpload={uploadResume} jobUrl={jobUrl} setJobUrl={setJobUrl} onJobUrlImport={importJobUrl} jobUrlLoading={jobUrlLoading} loading={loading} saved={profileSaved}/></div>
         <section className="grid">
           <div className="card"><div className="cardHeader"><div><span className="eyebrow">CANDIDATE</span><h2>{data.targetRole||'Target role not set'}</h2><p>{data.email}</p></div><button className="secondary" onClick={analyze} disabled={loading||!profileSaved}>Analyze skills</button></div><div className="skills">{(data.skills||[]).map((s:any)=><div className="skill" key={s.name}><span>{s.name}</span><b>{s.score}</b><div className="bar"><i style={{width:`${s.score}%`}}/></div></div>)}{!data.skills?.length&&<p>No skill assessment yet. Run AI analysis to create your baseline.</p>}</div></div>
           <div className="card jobAnalysis"><div className="cardHeader"><div><span className="eyebrow">JOB FIT</span><h2>Interview priorities</h2></div>{jobAnalysis&&<div className="fitScore"><strong>{jobAnalysis.fitScore}</strong><span>/100 fit</span></div>}</div>{!jobAnalysis?<p>Run AI analysis to compare your profile with the target job.</p>:<><p>{jobAnalysis.summary}</p><div className="gapList">{jobAnalysis.gaps.slice(0,4).map((gap)=><div className="gap" key={gap.name}><div><b>{gap.name}</b><p>{gap.reason}</p></div><span className={gap.priority.toLowerCase()}>{gap.priority}</span></div>)}{!jobAnalysis.gaps.length&&<p>No priority gaps were identified.</p>}</div></>}</div>
