@@ -68,6 +68,8 @@ function App() {
     if (!candidateId) return;
     const candidate = await request(`/api/candidates/${candidateId}`);
     setData(candidate);
+    setProfile({ name:candidate.name, email:candidate.email, experienceYears:candidate.experienceYears, targetRole:candidate.targetRole || '', resumeText:candidate.resumeText || '', jobDescription:candidate.jobDescription || '' });
+    setProfileSaved(true);
   }
 
   useEffect(() => {
