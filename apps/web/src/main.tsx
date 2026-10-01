@@ -144,8 +144,8 @@ function LandingPage({ onGetStarted }: { onGetStarted: (mode?: 'login'|'register
           <p>A simple loop that gets smarter as you practice.</p>
         </div>
         <div className="loopSteps">
-          <div><div className="loopStepNumber">1</div><h3>Build your profile</h3><p>Upload your resume, add your target role, and provide the job description.</p></div>
-          <div><div className="loopConnector"></div><div className="loopStepNumber">2</div><h3>Practice</h3><p>Run a technical interview tailored to your role and current skill gaps.</p></div>
+          <div><div className="loopConnector"></div><div className="loopStepNumber">1</div><h3>Build your profile</h3><p>Upload your resume, add your target role, and provide the job description.</p></div>
+          <div><div className="loopStepNumber">2</div><h3>Practice</h3><p>Run a technical interview tailored to your role and current skill gaps.</p></div>
           <div><div className="loopConnector"></div><div className="loopStepNumber">3</div><h3>Get evaluated</h3><p>Receive structured feedback on every answer and a readiness snapshot.</p></div>
           <div><div className="loopConnector"></div><div className="loopStepNumber">4</div><h3>Improve & repeat</h3><p>Follow a focused learning plan, then interview again to measure progress.</p></div>
         </div>
