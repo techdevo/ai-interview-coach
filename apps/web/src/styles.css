@@ -59,3 +59,106 @@
 .commandCenter{display:grid;grid-template-columns:1.15fr .85fr;gap:14px;margin-bottom:14px}.nextActionCard{background:#171717;color:#fff;border-radius:18px;padding:30px;min-height:300px;display:flex;flex-direction:column}.nextActionTop{display:flex;justify-content:space-between;align-items:center}.nextActionTop .eyebrow{color:#aaa}.actionDot{width:8px;height:8px;border-radius:50%;background:#fff}.nextActionCard h2{font-size:32px;letter-spacing:-1.3px;line-height:1.08;max-width:600px;margin:45px 0 10px}.nextActionCard p{color:#aaa;font-size:13px;line-height:1.65;max-width:570px;margin:0}.commandPrimary{display:inline-flex;align-items:center;justify-content:center;gap:13px;width:max-content;text-decoration:none;border:0;border-radius:9px;padding:12px 17px;background:#fff;color:#171717;font:inherit;font-size:12px;font-weight:800;cursor:pointer;margin-top:22px}.commandPrimary span{font-size:15px}.nextActionMeta{margin-top:auto;padding-top:22px;border-top:1px solid #3b3b3b;display:flex;justify-content:space-between;align-items:center;font-size:10px}.nextActionMeta span{color:#888}.nextActionMeta b{font-size:11px;color:#ddd}.commandReadiness{background:#fff;border:1px solid #e2e2dc;border-radius:18px;padding:25px}.commandCardHeader{display:flex;justify-content:space-between;gap:15px}.commandCardHeader h3{font-size:19px;letter-spacing:-.5px;margin:5px 0 0}.commandCardHeader a{font-size:10px;color:#777;text-decoration:none;white-space:nowrap;padding-top:3px}.commandScore{display:flex;align-items:baseline;gap:3px;margin:27px 0 19px}.commandScore strong{font-size:55px;letter-spacing:-4px}.commandScore>span{color:#999;font-size:12px}.commandScore small{margin-left:10px;padding:4px 7px;border-radius:999px;background:#efefea;color:#777;font-size:10px}.commandScore small.positive{color:#171717;font-weight:800}.commandBars>div{display:grid;grid-template-columns:1fr 32px;gap:7px;margin:13px 0;font-size:10px}.commandBars b{text-align:right}.commandBars i{grid-column:1/3;height:6px;border-radius:6px;background:#e8e8e2;overflow:hidden}.commandBars em{display:block;height:100%;background:#171717;border-radius:6px}.commandGrid{display:grid;grid-template-columns:1.15fr .85fr;gap:14px;margin-bottom:14px}.commandJobCard,.skillSnapshot{min-height:270px}.commandSummary{font-size:13px;line-height:1.55;margin:18px 0}.commandGaps{margin-top:10px}.commandGap{display:flex;justify-content:space-between;gap:15px;border-top:1px solid #eee;padding:12px 0}.commandGap b{display:block;font-size:12px}.commandGap span{display:block;color:#777;font-size:11px;margin-top:3px;line-height:1.4}.commandGap em{font-style:normal;height:max-content;padding:4px 7px;background:#f1f1ec;border-radius:5px;font-size:9px;font-weight:800}.commandGap em.high{background:#e8e8e3}.emptyCommand{padding:35px 0}.emptyCommand p{max-width:430px}.snapshotSkills{margin-top:18px}.snapshotSkill{display:grid;grid-template-columns:1fr 30px;gap:7px;margin:15px 0;font-size:11px}.snapshotSkill b{text-align:right}.snapshotSkill i{grid-column:1/3;height:5px;background:#e8e8e2;border-radius:5px;overflow:hidden}.snapshotSkill em{display:block;height:100%;background:#171717;border-radius:5px}.commandInterview{margin-bottom:14px;padding:30px!important}.commandInterviewIntro{display:flex;justify-content:space-between;gap:35px;align-items:flex-end}.commandInterviewIntro h2{font-size:29px;letter-spacing:-1px;margin:7px 0}.commandInterviewIntro>div>p{max-width:600px;font-size:13px;margin:0}.interviewSetup{min-width:250px}.interviewSetup label{display:block;font-size:10px;font-weight:800;color:#777}.interviewSetup select{width:100%;margin:7px 0 0}.interviewSetup .commandPrimary{width:100%;margin-top:9px}.interviewWorkspace{margin-top:27px;border-top:1px solid #eee;padding-top:18px}.secondaryArea{margin-top:65px;padding-top:35px;border-top:1px solid #ddd}.secondaryAreaHeader{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:18px}.secondaryAreaHeader p{font-size:11px;margin:0;color:#888}.secondaryArea #profile .profileCard{margin-bottom:14px}.secondaryArea .historyCard{margin-top:0}.secondaryArea .report,.secondaryArea .plan{margin-top:14px}
 @media(max-width:900px){.commandCenter,.commandGrid{grid-template-columns:1fr}.commandInterviewIntro{display:block}.interviewSetup{max-width:350px;margin-top:20px}.secondaryArea{margin-top:45px}}
 @media(max-width:560px){.nextActionCard{min-height:330px;padding:24px}.nextActionCard h2{font-size:28px;margin-top:40px}.commandReadiness,.commandInterview{padding:22px!important}.commandCardHeader{display:block}.commandCardHeader a{display:block;margin-top:8px}.commandScore strong{font-size:48px}.secondaryAreaHeader{display:block}.secondaryAreaHeader p{margin-top:5px}}
+
+
+/* Distinctive career-growth color system */
+:root{
+  --ink:#18171d;
+  --paper:#f7f3ea;
+  --paper-soft:#fbf8f1;
+  --indigo:#5b4bdb;
+  --indigo-dark:#342878;
+  --violet:#8067e8;
+  --lime:#b8e85a;
+  --orange:#f4ad55;
+  --line:#ded9cf;
+  --muted:#706b75;
+}
+body{background:var(--paper)}
+.dashboardApp{background:
+  radial-gradient(circle at 92% 6%,rgba(128,103,232,.10),transparent 24rem),
+  radial-gradient(circle at 4% 30%,rgba(184,232,90,.08),transparent 22rem),
+  var(--paper)}
+.dashboardApp .siteHeader{background:rgba(247,243,234,.92);border-color:var(--line)}
+.dashboardApp .brand span{background:var(--indigo);border-radius:9px}
+.dashboardApp .siteHeader nav a:hover{color:var(--indigo)}
+.dashboardHero{position:relative}
+.dashboardHero:before{
+  content:"";position:absolute;right:-28px;top:-28px;width:190px;height:150px;pointer-events:none;
+  background-image:radial-gradient(var(--indigo) 1px,transparent 1px);background-size:14px 14px;opacity:.13;
+  mask-image:linear-gradient(135deg,black,transparent 75%);
+}
+.dashboardHeroCopy h1{max-width:700px}
+.dashboardHeroCopy h1:after{
+  content:"";display:block;width:118px;height:9px;margin-top:15px;border-radius:99px;
+  background:linear-gradient(90deg,var(--lime),var(--orange));transform:rotate(-1.5deg);
+}
+.dashboardHeroActions a:first-child{background:var(--indigo)}
+.dashboardHeroActions a:first-child:hover{background:var(--indigo-dark)}
+.dashboardHeroActions a:last-child{background:#ebe6dc}
+.dashboardReadinessCard{
+  position:relative;overflow:hidden;
+  background:linear-gradient(135deg,var(--indigo-dark),var(--indigo) 62%,var(--violet));
+  border:0;
+}
+.dashboardReadinessCard:after{
+  content:"";position:absolute;width:180px;height:180px;right:-65px;bottom:-75px;border:30px solid rgba(184,232,90,.72);border-radius:50%;
+}
+.dashboardReadinessCard .eyebrow{color:#ddd8ff}
+.dashboardReadinessCard p{color:#e3def8}
+.dashboardScoreBar{background:rgba(255,255,255,.2)}
+.dashboardScoreBar i{background:var(--lime)}
+.commandCenter{position:relative}
+.nextActionCard{
+  background:linear-gradient(135deg,#211a4a 0%,var(--indigo-dark) 55%,#4b3bb0 100%);
+  border-color:#4d3d9c;box-shadow:0 18px 45px rgba(52,40,120,.16)
+}
+.nextActionCard:after{
+  content:"";position:absolute;right:-35px;top:-35px;width:150px;height:150px;
+  border:22px solid rgba(184,232,90,.72);border-radius:50%;pointer-events:none
+}
+.nextActionCard .eyebrow{color:#cfc7ff}
+.nextActionCard p{color:#ddd8ee}
+.nextActionCard h2{color:#fff}
+.nextActionMeta{border-color:rgba(255,255,255,.16)}
+.nextActionMeta span{color:#a9a1c8}
+.nextActionMeta b{color:#fff}
+.actionDot{background:var(--lime);box-shadow:0 0 0 5px rgba(184,232,90,.13)}
+.commandPrimary{background:var(--lime)!important;color:#211a4a!important}
+.commandPrimary:hover{background:#c8f170!important}
+.commandReadiness,.commandJobCard,.skillSnapshot,.commandInterview,.progressCard,.historyCard,.report,.plan,.profileCard{
+  background:rgba(255,255,255,.76);border-color:var(--line);box-shadow:0 12px 35px rgba(39,31,20,.045)
+}
+.commandCardHeader a{color:var(--indigo)}
+.commandScore strong{color:var(--indigo)}
+.commandScore small.positive{color:#6b9c17}
+.commandBars i,.snapshotSkill i,.trendItem i{background:#e9e3d8}
+.commandBars em,.snapshotSkill em,.trendItem i{background:var(--indigo)}
+.commandGaps .commandGap{border-color:#e5dfd5}
+.commandGap em.high{background:#ffe0b8;color:#8a4c08}
+.commandGap em.medium{background:#e8e1ff;color:#4b3aa0}
+.commandGap em.low{background:#e9f5cc;color:#4c6916}
+.fitScore strong{color:var(--indigo)}
+.gapChip{background:#f0ebff;border-color:#d9d0ff;color:#493b91}
+.commandInterview{background:linear-gradient(180deg,#fffdf8 0%,#f5f0ff 100%);position:relative;overflow:hidden}
+.commandInterview:before{
+  content:"";position:absolute;right:-100px;top:-100px;width:280px;height:280px;
+  background:radial-gradient(circle,rgba(128,103,232,.13) 0 2px,transparent 3px);background-size:13px 13px;
+}
+.commandInterviewIntro{position:relative;z-index:1}
+.commandInterview .question{background:#fff;border-color:#e1daf5;box-shadow:inset 4px 0 var(--indigo)}
+.commandInterview .bar i{background:var(--indigo)}
+.commandInterview textarea:focus{outline:2px solid rgba(91,75,219,.2);border-color:var(--indigo)}
+.commandInterview .primary{background:var(--indigo)}
+.commandInterview .primary:hover{background:var(--indigo-dark)}
+.scoreBox{background:#f1ecff;border:1px solid #e1d9fa}
+.scoreBox strong{color:var(--indigo-dark)}
+.secondary{background:#eee9df;color:var(--ink)}
+.secondary:hover{background:#e5ded1}
+.profileCard input,.profileTextarea,.jobUrlRow input,.card select,textarea{background:#fffdf9;border-color:#d9d2c7}
+.profileCard input:focus,.profileTextarea:focus,.jobUrlRow input:focus,.card select:focus,textarea:focus{outline:2px solid rgba(91,75,219,.15);border-color:var(--indigo)}
+.savedNotice{background:#edf7d9;color:#526d20}
+.uploadRow{background:#fcfaf5;border-color:#cfc6b7}
+.error{background:#fff1e7;border-color:#f0c28d;color:#8a4c08}
+.siteFooter{border-color:var(--line)}
+.siteFooter div{color:var(--indigo-dark)}
