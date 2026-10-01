@@ -287,6 +287,7 @@ function App() {
 
         {report && <section className="card report">
           <div className="cardHeader"><div><span className="eyebrow">INTERVIEW REPORT</span><h2>Your readiness snapshot</h2></div><div className="readiness"><strong>{readiness}</strong><span>/100</span></div></div>
+          <p className="scoreNote">This interview score reflects technical accuracy, depth, communication, overall answer quality, consistency, and interview completion.</p>
           <div className="scoreGrid reportScores"><Score label="Technical" value={report.scores.technical}/><Score label="Depth" value={report.scores.depth}/><Score label="Communication" value={report.scores.communication}/><Score label="Overall" value={report.scores.overall}/></div>
           <div className="reportColumns"><div><h3>Topics to strengthen</h3>{report.missingConcepts.length ? <ul>{report.missingConcepts.map((x: string) => <li key={x}>{x}</li>)}</ul> : <p>No recurring gaps were identified.</p>}</div><div><h3>Next step</h3><p>Turn the weaknesses from this interview into a focused preparation plan.</p><button onClick={createLearningPlan} disabled={loading}>Generate 14-day plan</button></div></div>
         </section>}
