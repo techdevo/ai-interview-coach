@@ -2,6 +2,8 @@ import 'dotenv/config';
 import express, { type NextFunction, type Request, type Response } from 'express';
 import cors from 'cors';
 import { z } from 'zod';
+import multer from 'multer';
+import { extractResumeText } from './services/resume.service';
 import { prisma } from './lib/prisma';
 import { jsonCompletion } from './ai/openai';
 import { analysisSchema, planSchema } from './ai/schemas';
@@ -14,6 +16,7 @@ import {
 
 const app = express();
 const port = Number(process.env.PORT || 4000);
+const resumeUpload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
 
 function routeParam(req: Request, name: string): string {
   const value = req.params[name];
@@ -82,6 +85,43 @@ app.post(
 
     const candidate = await prisma.candidate.create({ data: body });
     res.status(201).json(candidate);
+  }),
+);
+
+app.post(
+  '/api/candidates/:id/resume',
+  resumeUpload.single('resume'),
+  asyncRoute(async (req, res) => {
+    if (!req.file) {
+      res.status(400).json({ error: 'Resume file is required' });
+      return;
+    }
+
+    const resumeText = await extractResumeText(
+      req.file.buffer,
+      req.file.mimetype,
+      req.file.originalname,
+    );
+
+    if (resumeText.length < 20) {
+      res.status(400).json({ error: 'Could not extract enough text from the resume' });
+      return;
+    }
+
+    const candidate = await prisma.candidate.update({
+      where: { id: routeParam(req, 'id') },
+      data: { resumeText },
+    });
+
+    await prisma.jobAnalysis.deleteMany({
+      where: { candidateId: candidate.id },
+    });
+
+    res.json({
+      candidateId: candidate.id,
+      filename: req.file.originalname,
+      resumeText,
+    });
   }),
 );
 
