@@ -85,6 +85,33 @@ app.post(
   }),
 );
 
+app.patch(
+  '/api/candidates/:id',
+  asyncRoute(async (req, res) => {
+    const body = z
+      .object({
+        name: z.string().min(1),
+        email: z.string().email(),
+        experienceYears: z.number().int().min(0),
+        targetRole: z.string().min(1),
+        resumeText: z.string().min(20),
+        jobDescription: z.string().min(20),
+      })
+      .parse(req.body);
+
+    const candidate = await prisma.candidate.update({
+      where: { id: routeParam(req, 'id') },
+      data: body,
+    });
+
+    await prisma.jobAnalysis.deleteMany({
+      where: { candidateId: candidate.id },
+    });
+
+    res.json(candidate);
+  }),
+);
+
 app.post(
   '/api/candidates/:id/analyze',
   asyncRoute(async (req, res) => {
