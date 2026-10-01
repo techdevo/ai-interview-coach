@@ -17,8 +17,8 @@ function Score({label,value}:{label:string;value:number}) {
   return <div className="scoreBox"><span>{label}</span><strong>{value}</strong></div>;
 }
 
-function AuthScreen({ onAuth }: { onAuth: (result:any)=>void }) {
-  const [mode,setMode]=useState<'login'|'register'>('login');
+function AuthScreen({ onAuth, initialMode='login' }: { onAuth: (result:any)=>void; initialMode?: 'login'|'register' }) {
+  const [mode,setMode]=useState<'login'|'register'>(initialMode);
   const [name,setName]=useState('');
   const [email,setEmail]=useState('');
   const [password,setPassword]=useState('');
@@ -194,7 +194,7 @@ function LandingPage({ onGetStarted }: { onGetStarted: (mode?: 'login'|'register
   </div>;
 }
 function App() {
-  const [showAuth,setShowAuth]=useState(false);
+  const [showAuth,setShowAuth]=useState<'login'|'register'|null>(null);
   const [token,setToken]=useState(localStorage.getItem('authToken') || '');
   const [id,setId]=useState(localStorage.getItem('candidateId') || '');
   const [data,setData]=useState<any>(null);
@@ -304,8 +304,8 @@ function App() {
         : highPriorityGap
           ? {eyebrow:'NEXT FOCUS',title:`Strengthen ${highPriorityGap.name}`,description:highPriorityGap.reason,button:`Practice ${highPriorityGap.name}`,action:'focus'}
           : {eyebrow:'KEEP GOING',title:'Take another interview',description:'Use another interview to validate your progress and update your readiness profile.',button:'Start next interview',action:'start'};
-  if(!token && !showAuth) return <LandingPage onGetStarted={(mode) => { setShowAuth(true); }} />;
-  if(!token) return <AuthScreen onAuth={handleAuth}/>;
+  if(!token && !showAuth) return <LandingPage onGetStarted={(mode) => { setShowAuth(mode || 'register'); }} />;
+  if(!token) return <AuthScreen initialMode={showAuth || 'login'} onAuth={handleAuth}/>;
 
   return <div className="appShell dashboardApp">
     <header className="siteHeader">
