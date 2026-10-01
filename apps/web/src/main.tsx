@@ -289,7 +289,7 @@ function App() {
   const readiness=useMemo(()=>report?.scores?.overall||0,[report]);
   const completedInterviews=readinessHistory?.history?.length||0;
   const highPriorityGap=jobAnalysis?.gaps?.find(g=>g.priority==='HIGH');
-  const nextAction=!profileSaved
+  const nextAction: { eyebrow:string; title:string; description:string; button:string; href?:string; action?:string }=!profileSaved
     ? {eyebrow:'STEP 1',title:'Complete your interview profile',description:'Add your resume, target role, and job description so the coach can prepare against the job you actually want.',button:'Complete profile',href:'#profile'}
     : !jobAnalysis
       ? {eyebrow:'STEP 2',title:'Analyze your target role',description:'Let the coach compare your profile with the target job and identify the skills that need attention.',button:'Analyze my profile',action:'analyze'}
