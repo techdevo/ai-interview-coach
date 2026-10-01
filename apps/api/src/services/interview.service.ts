@@ -108,8 +108,28 @@ async function completeInterview(interviewId: string, strengths: string[] = []) 
     Array.isArray(q.missingConcepts) ? q.missingConcepts.map(String) : [],
   ))];
 
+  const allStrengths = [...new Set([
+    ...strengths,
+    ...answered.flatMap((q) =>
+      Array.isArray(q.missingConcepts) ? [] : [],
+    ),
+  ])];
+
+  const consistencyBonus = answered.length >= 5
+    ? Math.min(5, Math.max(0, 5 - Math.round(
+      Math.sqrt(answered.reduce((sum, q) => sum + Math.pow((q.overallScore ?? 0) - overall, 2), 0) / answered.length),
+    )))
+    : 0;
+
+  const completionFactor = Math.min(1, answered.length / MAX_QUESTIONS);
+  const weightedScore =
+    technical * 0.4 +
+    depth * 0.3 +
+    communication * 0.15 +
+    overall * 0.15;
+
   const readinessScore = Math.round(
-    technical * 0.45 + depth * 0.3 + communication * 0.15 + overall * 0.1,
+    Math.min(100, weightedScore * (0.9 + completionFactor * 0.1) + consistencyBonus),
   );
 
   await prisma.readinessSnapshot.upsert({
@@ -119,7 +139,7 @@ async function completeInterview(interviewId: string, strengths: string[] = []) 
       technicalScore: technical,
       depthScore: depth,
       communicationScore: communication,
-      strengths,
+      strengths: allStrengths,
       missingConcepts,
     },
     create: {
