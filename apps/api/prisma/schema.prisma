@@ -19,18 +19,19 @@ enum Difficulty {
 }
 
 model Candidate {
-  id              String          @id @default(cuid())
+  id              String              @id @default(cuid())
   name            String
-  email           String          @unique
-  experienceYears Int             @default(0)
+  email           String              @unique
+  experienceYears Int                 @default(0)
   targetRole      String?
   resumeText      String?
   jobDescription  String?
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
   skills          CandidateSkill[]
   interviews      Interview[]
   learningPlans   LearningPlan[]
+  readiness       ReadinessSnapshot[]
 }
 
 model CandidateSkill {
@@ -45,22 +46,25 @@ model CandidateSkill {
 }
 
 model Interview {
-  id          String            @id @default(cuid())
+  id          String              @id @default(cuid())
   candidateId String
-  status      InterviewStatus   @default(IN_PROGRESS)
+  status      InterviewStatus     @default(IN_PROGRESS)
   topic       String
-  difficulty  Difficulty        @default(MEDIUM)
-  startedAt   DateTime          @default(now())
+  difficulty  Difficulty          @default(MEDIUM)
+  startedAt   DateTime            @default(now())
   completedAt DateTime?
-  candidate   Candidate         @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  candidate   Candidate           @relation(fields: [candidateId], references: [id], onDelete: Cascade)
   questions   InterviewQuestion[]
+  readiness   ReadinessSnapshot?
 }
 
 model InterviewQuestion {
-  id                 String    @id @default(cuid())
+  id                 String     @id @default(cuid())
   interviewId        String
   sequence           Int
   question           String
+  topic              String?
+  difficulty         Difficulty?
   answer             String?
   technicalScore     Int?
   depthScore         Int?
@@ -68,9 +72,26 @@ model InterviewQuestion {
   overallScore       Int?
   feedback           String?
   missingConcepts    Json?
-  interview          Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
+  interview          Interview  @relation(fields: [interviewId], references: [id], onDelete: Cascade)
 
   @@unique([interviewId, sequence])
+}
+
+model ReadinessSnapshot {
+  id                 String    @id @default(cuid())
+  candidateId        String
+  interviewId        String    @unique
+  readinessScore     Int
+  technicalScore     Int
+  depthScore         Int
+  communicationScore Int
+  strengths          Json
+  missingConcepts    Json
+  createdAt          DateTime  @default(now())
+  candidate          Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  interview          Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
+
+  @@index([candidateId, createdAt])
 }
 
 model LearningPlan {
