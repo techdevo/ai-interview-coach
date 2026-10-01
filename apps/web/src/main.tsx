@@ -23,6 +23,19 @@ type Question = {
   difficulty?: string;
 };
 
+type JobGap = {
+  name: string;
+  priority: 'HIGH' | 'MEDIUM' | 'LOW';
+  reason: string;
+};
+
+type JobAnalysis = {
+  fitScore: number;
+  summary: string;
+  strengths: string[];
+  gaps: JobGap[];
+};
+
 function Score({ label, value }: { label: string; value: number }) {
   return <div className="scoreBox"><span>{label}</span><strong>{value}</strong></div>;
 }
@@ -36,6 +49,8 @@ function App() {
   const [evaluation, setEvaluation] = useState<Evaluation | null>(null);
   const [report, setReport] = useState<any>(null);
   const [learningPlan, setLearningPlan] = useState<any>(null);
+
+  const jobAnalysis: JobAnalysis | null = data?.jobAnalysis || null;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -165,11 +180,50 @@ function App() {
             </div>
           </div>
 
+          <div className="card jobAnalysis">
+            <div className="cardHeader">
+              <div>
+                <span className="eyebrow">JOB FIT</span>
+                <h2>Interview priorities</h2>
+              </div>
+              {jobAnalysis && (
+                <div className="fitScore">
+                  <strong>{jobAnalysis.fitScore}</strong>
+                  <span>/100 fit</span>
+                </div>
+              )}
+            </div>
+            {!jobAnalysis ? (
+              <p>Run AI analysis to compare the candidate profile with the target job and identify the areas the interviewer should probe.</p>
+            ) : (
+              <>
+                <p>{jobAnalysis.summary}</p>
+                <div className="gapList">
+                  {jobAnalysis.gaps.slice(0, 4).map((gap) => (
+                    <div className="gap" key={gap.name}>
+                      <div>
+                        <b>{gap.name}</b>
+                        <p>{gap.reason}</p>
+                      </div>
+                      <span className={gap.priority.toLowerCase()}>{gap.priority}</span>
+                    </div>
+                  ))}
+                  {!jobAnalysis.gaps.length && <p>No priority gaps were identified.</p>}
+                </div>
+              </>
+            )}
+          </div>
+
           <div className="card">
             <span className="eyebrow">ADAPTIVE INTERVIEW</span>
             <h2>AI technical interview</h2>
             {!question ? <>
-              <p>Choose a topic. The interviewer will adapt its next question based on your answer and detected gaps.</p>
+              <p>Choose a topic. The interviewer will adapt its next question using your answers and the job gaps identified above.</p>
+              {jobAnalysis?.gaps.some((gap) => gap.priority === 'HIGH') && (
+                <div className="aiHint">
+                  <b>AI focus:</b> {jobAnalysis.gaps.find((gap) => gap.priority === 'HIGH')?.name}
+                </div>
+              )}
               <select value={topic} onChange={e => setTopic(e.target.value)}><option>Node.js</option><option>AWS</option><option>PostgreSQL</option><option>System Design</option><option>React</option></select>
               <button className="primary" onClick={start} disabled={loading}>Start interview</button>
             </> : <>
