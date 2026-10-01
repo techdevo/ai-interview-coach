@@ -372,6 +372,20 @@ export async function getCandidateReadiness(candidateId: string) {
   const latest = history.at(-1) || null;
   const previous = history.length > 1 ? history.at(-2) : null;
 
+  const conceptCounts = new Map<string, number>();
+  for (const item of history) {
+    for (const concept of item.missingConcepts) {
+      const normalized = String(concept).trim();
+      if (normalized) conceptCounts.set(normalized, (conceptCounts.get(normalized) || 0) + 1);
+    }
+  }
+
+  const recurringGaps = [...conceptCounts.entries()]
+    .filter(([, count]) => count >= Math.min(2, history.length))
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 6)
+    .map(([concept, occurrences]) => ({ concept, occurrences }));
+
   return {
     candidateId,
     role: candidate.targetRole || 'Software Engineer',
@@ -380,5 +394,6 @@ export async function getCandidateReadiness(candidateId: string) {
     latestChange: latest && previous ? latest.readinessScore - previous.readinessScore : 0,
     history,
     latest,
+    recurringGaps,
   };
 }
