@@ -63,11 +63,10 @@ function LandingPage({ onGetStarted }: { onGetStarted: (mode?: 'login'|'register
     <header className="landingHeader">
       <div className="landingHeaderInner">
         <a className="landingBrand" href="#">
-          <span className="landingBrandMark">AI</span>
-          <span>Interview Coach</span>
+          <span className="landingBrandMark">AI</span><span>Interview Coach</span>
         </a>
         <nav className="landingNav">
-          <a href="#features">Features</a>
+          <a href="#difference">Why it works</a>
           <a href="#how-it-works">How it works</a>
           <a href="#readiness">Readiness</a>
         </nav>
@@ -79,83 +78,86 @@ function LandingPage({ onGetStarted }: { onGetStarted: (mode?: 'login'|'register
     </header>
 
     <main className="landingMain">
-      <section className="heroSection">
+      <section className="heroSection landingHero">
         <div className="heroCopy">
           <div className="heroEyebrow"><span>✦</span> AI-powered interview preparation</div>
-          <h1>Know what to improve <em>before</em> the interview.</h1>
-          <p className="heroText">Practice against the role you want, get evaluated like a real interview, and build a preparation plan around the gaps that actually matter.</p>
+          <h1>Stop guessing what to prepare.<br/><em>Know what to improve next.</em></h1>
+          <p className="heroText">Turn your resume and target job into a personalized preparation loop — identify the gaps, practice with an adaptive AI interviewer, and measure whether you're actually getting better.</p>
           <div className="heroActions">
             <button className="heroPrimary" onClick={() => onGetStarted('register')}>Start preparing free <span>→</span></button>
             <button className="heroSecondary" onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}>See how it works</button>
           </div>
           <div className="heroProof">
-            <span>✓ Role-specific questions</span>
-            <span>✓ Instant AI feedback</span>
-            <span>✓ Progress over time</span>
+            <span>✓ Built around your target job</span>
+            <span>✓ Feedback after every answer</span>
+            <span>✓ Readiness that changes with you</span>
           </div>
         </div>
 
         <div className="heroProduct">
-          <div className="browserBar"><span></span><span></span><span></span><small>AI Interview Coach</small></div>
+          <div className="browserBar"><span></span><span></span><span></span><small>AI Interview Coach / Readiness</small></div>
           <div className="heroProductBody">
             <div className="mockSidebar">
               <div className="mockLogo">AI</div>
-              <div className="mockNav active">Dashboard</div>
+              <div className="mockNav active">Readiness</div>
               <div className="mockNav">Interview</div>
-              <div className="mockNav">History</div>
+              <div className="mockNav">Learning</div>
             </div>
             <div className="mockDashboard">
-              <div className="mockTopline"><div><small>READINESS</small><b>Interview readiness</b></div><strong>78<span>/100</span></strong></div>
-              <div className="mockChart"><div className="mockChartLine"></div><div className="mockChartLabels"><span>Interview 1</span><span>Interview 2</span><span>Interview 3</span></div></div>
+              <div className="mockTopline"><div><small>YOUR READINESS</small><b>Senior Backend Engineer</b></div><strong>78<span>/100</span></strong></div>
+              <div className="mockChart"><div className="mockChartLine"></div><div className="mockChartLabels"><span>Baseline</span><span>Practice</span><span>Now</span></div></div>
               <div className="mockCards">
-                <div><small>Technical</small><b>84</b><i style={{width:'84%'}}></i></div>
-                <div><small>Depth</small><b>72</b><i style={{width:'72%'}}></i></div>
-                <div><small>Communication</small><b>81</b><i style={{width:'81%'}}></i></div>
+                <div><small>Technical</small><b>84</b><i></i></div>
+                <div><small>Depth</small><b>72</b><i></i></div>
+                <div><small>Communication</small><b>81</b><i></i></div>
               </div>
-              <div className="mockGap"><small>YOUR NEXT FOCUS</small><b>System Design · High priority</b><span>Practice →</span></div>
+              <div className="mockGap"><small>NEXT FOCUS</small><b>System Design · High priority</b><span>Practice this gap →</span></div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="featureStrip" id="features">
-        <div><span className="featureIcon">01</span><div><b>Job-aware practice</b><p>Questions adapt to the role and job description you're targeting.</p></div></div>
-        <div><span className="featureIcon">02</span><div><b>Measure every answer</b><p>See technical accuracy, depth, communication, and overall quality.</p></div></div>
-        <div><span className="featureIcon">03</span><div><b>Close the right gaps</b><p>Your learning plan uses interview evidence instead of generic advice.</p></div></div>
+      <section className="landingStatement" id="difference">
+        <div className="landingStatementLabel"><span className="landingEyebrow">THE PROBLEM</span><span>01</span></div>
+        <div>
+          <h2>Most interview prep tells you <em>what</em> to study.</h2>
+          <h2 className="statementAccent">We help you understand <em>what you need to improve.</em></h2>
+        </div>
+        <p>Generic question banks give you more questions. AI Interview Coach uses your target role, your answers, and your preparation history to decide what deserves your attention next.</p>
       </section>
 
-      <section className="valueSection">
+      <section className="valueSection landingDifference">
         <div className="sectionHeading">
-          <span className="landingEyebrow">BUILT FOR REAL PREPARATION</span>
-          <h2>Don't just practice more.<br/><span>Practice with a feedback loop.</span></h2>
-          <p>Most mock interviews end when you get the feedback. AI Interview Coach uses that feedback to decide what you should work on next.</p>
+          <span className="landingEyebrow">THE FEEDBACK LOOP</span>
+          <h2>Preparation becomes a system.<br/><span>Not a pile of questions.</span></h2>
+          <p>Your interview is not the end of the process. It becomes evidence for the next step.</p>
         </div>
         <div className="valueGrid">
-          <div className="valueCard valueLarge"><div className="valueNumber">01</div><h3>Start with the job</h3><p>Add your resume and target job description. The coach identifies the skills and expectations that matter for your interview.</p><div className="miniJob"><small>TARGET ROLE</small><b>Senior Backend Engineer</b><span>Node.js · AWS · PostgreSQL · System Design</span></div></div>
-          <div className="valueCard"><div className="valueNumber">02</div><h3>Interview like it matters</h3><p>Get adaptive questions that probe weak areas without repeatedly testing concepts you've already demonstrated.</p><div className="miniQuestion"><small>AI INTERVIEWER</small><b>How would you design this service to handle 10× the current traffic?</b><span>Question 4 of 10 · System Design</span></div></div>
-          <div className="valueCard"><div className="valueNumber">03</div><h3>Know your readiness</h3><p>Track readiness across interviews and surface concepts that continue to appear as gaps.</p><div className="miniScore"><strong>78</strong><div><small>READINESS</small><span>+11 from your first interview</span></div></div></div>
+          <div className="valueCard valueLarge"><div className="valueNumber">01</div><h3>Start with the job</h3><p>Add your resume and target job description. The coach identifies the skills and expectations that matter for the interview you're actually pursuing.</p><div className="miniJob"><small>TARGET ROLE</small><b>Senior Backend Engineer</b><span>Node.js · AWS · PostgreSQL · System Design</span></div></div>
+          <div className="valueCard"><div className="valueNumber">02</div><h3>Find the gaps</h3><p>Turn the job requirements and your profile into a focused set of interview priorities.</p><div className="miniQuestion"><small>JOB ANALYSIS</small><b>System Design</b><span>High priority · Needs deeper applied practice</span></div></div>
+          <div className="valueCard"><div className="valueNumber">03</div><h3>Practice. Measure. Improve.</h3><p>Every answer produces evidence. Your readiness profile changes as your performance changes.</p><div className="miniScore"><strong>78</strong><div><small>READINESS</small><span>+17 from your baseline</span></div></div></div>
         </div>
       </section>
 
       <section className="loopSection" id="how-it-works">
         <div className="sectionHeading centered">
           <span className="landingEyebrow">HOW IT WORKS</span>
-          <h2>From job description to <span>interview-ready.</span></h2>
-          <p>A simple loop that gets smarter as you practice.</p>
+          <h2>From target job to <span>interview-ready.</span></h2>
+          <p>One preparation loop that gets more useful every time you use it.</p>
         </div>
         <div className="loopSteps">
-          <div><div className="loopStepNumber">1</div><h3>Build your profile</h3><p>Upload your resume, add your target role, and provide the job description.</p></div>
-          <div><div className="loopConnector"></div><div className="loopStepNumber">2</div><h3>Practice</h3><p>Run a technical interview tailored to your role and current skill gaps.</p></div>
-          <div><div className="loopConnector"></div><div className="loopStepNumber">3</div><h3>Get evaluated</h3><p>Receive structured feedback on every answer and a readiness snapshot.</p></div>
-          <div><div className="loopConnector"></div><div className="loopStepNumber">4</div><h3>Improve & repeat</h3><p>Follow a focused learning plan, then interview again to measure progress.</p></div>
+          <div><div className="loopStepNumber">1</div><h3>Build your profile</h3><p>Upload your resume, choose your target role, and add the job description.</p></div>
+          <div><div className="loopConnector"></div><div className="loopStepNumber">2</div><h3>Analyze the role</h3><p>Identify the skills, expectations, and gaps that deserve attention.</p></div>
+          <div><div className="loopConnector"></div><div className="loopStepNumber">3</div><h3>Take an adaptive interview</h3><p>Answer questions selected around your role and the weaknesses your history reveals.</p></div>
+          <div><div className="loopConnector"></div><div className="loopStepNumber">4</div><h3>Improve & repeat</h3><p>Follow a focused plan, interview again, and see whether your readiness moves.</p></div>
         </div>
       </section>
 
       <section className="readinessSection" id="readiness">
         <div className="readinessCopy">
-          <span className="landingEyebrow">YOUR PREPARATION, IN ONE VIEW</span>
-          <h2>See progress.<br/><span>Not just practice history.</span></h2>
-          <p>Every completed interview contributes evidence to your readiness profile. Track your trajectory, recurring gaps, and the areas that need attention next.</p>
+          <span className="landingEyebrow">THE OUTCOME</span>
+          <h2>Know where you stand.<br/><span>Know what comes next.</span></h2>
+          <p>Instead of ending a mock interview with a list of generic tips, see a readiness snapshot built from your performance: technical ability, depth, communication, recurring gaps, and progress over time.</p>
           <button className="heroPrimary" onClick={() => onGetStarted('register')}>Build my readiness profile <span>→</span></button>
         </div>
         <div className="readinessPanel">
@@ -166,14 +168,19 @@ function LandingPage({ onGetStarted }: { onGetStarted: (mode?: 'login'|'register
             <div><span>Communication</span><b>81</b><i><em style={{width:'81%'}}></em></i></div>
           </div>
           <div className="recurringPreview"><small>RECURRING GAPS</small><div><span>System Design</span><span>Database indexing</span><span>Distributed systems</span></div></div>
-          <div className="readinessTimeline"><span><b>61</b><small>Interview 1</small></span><span><b>69</b><small>Interview 2</small></span><span className="current"><b>78</b><small>Interview 3</small></span></div>
+          <div className="readinessTimeline"><span><b>61</b><small>Baseline</small></span><span><b>69</b><small>Practice</small></span><span className="current"><b>78</b><small>Now</small></span></div>
         </div>
+      </section>
+
+      <section className="landingAudience">
+        <div><span className="landingEyebrow">MADE FOR ENGINEERS</span><h2>Prepare for the role<br/><em>you actually want.</em></h2></div>
+        <div className="audienceSkills"><span>Node.js</span><span>React</span><span>AWS</span><span>PostgreSQL</span><span>System Design</span><span>TypeScript</span><span>+ your target role</span></div>
       </section>
 
       <section className="finalCta">
         <div>
           <span className="landingEyebrow">READY WHEN YOU ARE</span>
-          <h2>Turn interview anxiety into a preparation plan.</h2>
+          <h2>Stop guessing what to prepare. Start knowing what to work on next.</h2>
           <p>Start free. Build your profile. Take your first AI interview.</p>
         </div>
         <button onClick={() => onGetStarted('register')}>Start preparing free <span>→</span></button>
@@ -186,7 +193,6 @@ function LandingPage({ onGetStarted }: { onGetStarted: (mode?: 'login'|'register
     </footer>
   </div>;
 }
-
 function App() {
   const [showAuth,setShowAuth]=useState(false);
   const [token,setToken]=useState(localStorage.getItem('authToken') || '');
