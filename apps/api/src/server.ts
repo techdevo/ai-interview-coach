@@ -28,6 +28,65 @@ function routeParam(req: Request, name: string): string {
 app.use(cors());
 app.use(express.json({ limit: '2mb' }));
 
+app.post('/api/auth/register', asyncRoute(async (req, res) => {
+  const body = z.object({
+    name: z.string().min(1),
+    email: z.string().email(),
+    password: z.string().min(8),
+  }).parse(req.body);
+
+  const passwordHash = await hashPassword(body.password);
+  const candidate = await prisma.candidate.create({
+    data: { name: body.name, email: body.email, passwordHash },
+  });
+
+  res.status(201).json({
+    token: signToken(candidate.id),
+    candidate: { id: candidate.id, name: candidate.name, email: candidate.email },
+  });
+}));
+
+app.post('/api/auth/login', asyncRoute(async (req, res) => {
+  const body = z.object({
+    email: z.string().email(),
+    password: z.string().min(1),
+  }).parse(req.body);
+
+  const candidate = await prisma.candidate.findUnique({ where: { email: body.email } });
+  if (!candidate || !(await verifyPassword(body.password, candidate.passwordHash))) {
+    res.status(401).json({ error: 'Invalid email or password' });
+    return;
+  }
+
+  res.json({
+    token: signToken(candidate.id),
+    candidate: { id: candidate.id, name: candidate.name, email: candidate.email },
+  });
+}));
+
+app.use('/api', requireAuth);
+
+app.use('/api/candidates/:id', (req, res, next) => {
+  if (routeParam(req, 'id') !== authCandidateId(req)) {
+    res.status(403).json({ error: 'You do not have access to this candidate' });
+    return;
+  }
+  next();
+});
+
+app.use('/api/interviews/:id', asyncRoute(async (req, res, next) => {
+  const interview = await prisma.interview.findUnique({
+    where: { id: routeParam(req, 'id') },
+    select: { candidateId: true },
+  });
+  if (!interview) { res.status(404).json({ error: 'Interview not found' }); return; }
+  if (interview.candidateId !== authCandidateId(req)) {
+    res.status(403).json({ error: 'You do not have access to this interview' });
+    return;
+  }
+  next();
+});
+
 const asyncRoute =
   (handler: (req: Request, res: Response, next: NextFunction) => Promise<void>) =>
   (req: Request, res: Response, next: NextFunction) => {
@@ -81,10 +140,13 @@ app.post(
         targetRole: z.string().optional(),
         resumeText: z.string().optional(),
         jobDescription: z.string().optional(),
+        password: z.string().min(8),
       })
       .parse(req.body);
 
-    const candidate = await prisma.candidate.create({ data: body });
+    const candidate = await prisma.candidate.create({
+      data: { ...body, passwordHash: await hashPassword(body.password), password: undefined },
+    });
     res.status(201).json(candidate);
   }),
 );
